@@ -13,20 +13,20 @@ data <- read_csv("../receiver-deployments-6-29-2026.csv") %>%
   filter(recvProjectID %in% c(347, 465, 281, 350, 856, 876) &
            deploymentStatus == "active") %>%
   # remove stations from NMGF & TWPD projects that were installed by others
-  filter_out(motusRecvID %in% c(15842,
-                                15655,
-                                15654,
-                                15420,
-                                15653,
-                                15652,
-                                15628,
-                                15421,
-                                16249,
-                                15614,
-                                15491,
-                                15460,
-                                15464,
-                                15469)) 
+  filter_out(recvDeployID %in% c(11985,
+                                 11777,
+                                 11741,
+                                 11727,
+                                 11732,
+                                 13124,
+                                 12060,
+                                 13123,
+                                 11667,
+                                 13122,
+                                 12057,
+                                 13121,
+                                 11668,
+                                 13113)) 
 
 data_vect <- vect(data,
                   crs = "+proj=longlat",
@@ -41,10 +41,6 @@ data_vect <- vect(data,
 #### *as of 6-29-2026*
 
 ```{r, echo = F, message = F, out.width = "100%"}
-
-content <- paste(sep = "<br/>",
-                 data$deploymentName,
-                 paste(month(data$dtStart), day(data$dtStart), year(data$dtStart), sep = "-"))
 
 leaflet(data) %>%
  addTiles() %>%
