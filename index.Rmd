@@ -6,6 +6,7 @@ output: html_document
 library(tidyverse)
 library(leaflet)
 library(leaflet.extras)
+library(terra)
 
 data <- read_csv("../receiver-deployments-6-29-2026.csv") %>%
   mutate(dtStart = as_date(dtStart)) %>%
@@ -26,6 +27,11 @@ data <- read_csv("../receiver-deployments-6-29-2026.csv") %>%
                                 15460,
                                 15464,
                                 15469)) 
+
+data_vect <- vect(data,
+                  crs = "+proj=longlat",
+                  geom = c("longitude", "latitude")) %>%
+  buffer(width = 15000)
 ```
 <br>
 <br>
@@ -42,8 +48,13 @@ content <- paste(sep = "<br/>",
 
 leaflet(data) %>%
  addTiles() %>%
-  addMarkers(data = data,
+  addPolygons(data = data_vect,
+              stroke = FALSE) %>%
+  addCircleMarkers(data = data,
              lng = data$longitude, lat = data$latitude,
+             radius = 3,
+             stroke = FALSE,
+             fillOpacity = 1,
              popup = ~paste(sep = "<br/>",
                             data$deploymentName,
                             paste("Installed", paste(month(data$dtStart), day(data$dtStart), year(data$dtStart), sep = "-")))) %>%
